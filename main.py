@@ -36,7 +36,7 @@ def browse_output_directory(output_dir_entry):
         output_dir_entry.insert(0, folder_selected)  # Insert the selected folder path
 
 # Function to start downloading the video using yt-dlp
-def start_download_process(url_entry, output_dir_entry, resolution_var):
+def start_download_process(url_entry, output_dir_entry, resolution_var, queue_listbox):
     url = url_entry.get()  # Get the video URL from the entry field
     output_dir = output_dir_entry.get()  # Get the output directory from the entry field
     resolution = resolution_var.get()  # Get the selected resolution format ID
@@ -49,9 +49,9 @@ def start_download_process(url_entry, output_dir_entry, resolution_var):
         messagebox.showerror("Error", "Please select a resolution to download.")
         return
     
-    # Add logic here to start the download using yt-dlp or download_manager module
+    # Add the video to the queue
     add_to_queue(url, output_dir, resolution)
-    update_queue_listbox(queue_listbox)  # Update the download queue display
+    update_queue_listbox(queue_listbox)  # Update the queue listbox display
     if not download_manager.is_downloading:  # Start downloading if not already in progress
         process_next_in_queue()
 
@@ -141,9 +141,13 @@ output_dir_entry.grid(row=1, column=1, padx=10, pady=10)
 browse_button = tk.Button(downloader_frame, text="Browse", command=lambda: browse_output_directory(output_dir_entry))
 browse_button.grid(row=1, column=2, padx=10, pady=10)
 
+# Queue listbox to display the download queue
+queue_listbox = tk.Listbox(downloader_frame, width=50, height=10)
+queue_listbox.grid(row=3, column=1, padx=10, pady=10)
+
 # Download button to start the video download process
-download_button = tk.Button(downloader_frame, text="Download", command=lambda: start_download_process(url_entry, output_dir_entry, resolution_var))
-download_button.grid(row=3, column=1, padx=10, pady=10)
+download_button = tk.Button(downloader_frame, text="Download", command=lambda: start_download_process(url_entry, output_dir_entry, resolution_var, queue_listbox))
+download_button.grid(row=4, column=1, padx=10, pady=10)
 
 # ==================== Second Tab (Video Utilities) ============================
 utilities_frame = ttk.Frame(notebook)
