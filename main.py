@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from format_fetcher import fetch_formats
-from download_manager import start_download
+import download_manager  # Import download_manager module
 from queue_manager import add_to_queue, remove_from_queue, move_up_in_queue, move_down_in_queue, update_queue_listbox, process_next_in_queue
 
 # GUI Setup
@@ -43,7 +43,7 @@ def start_next_in_queue():
     next_download = process_next_in_queue()
     if next_download:
         url, output_path, resolution = next_download
-        start_download(url, output_path, resolution, start_next_in_queue)
+        download_manager.start_download(url, output_path, resolution, start_next_in_queue)  # Use download_manager here
 
 # Function to handle the download button click
 def start_download_process():
@@ -59,7 +59,7 @@ def start_download_process():
     update_queue_listbox(queue_listbox)
 
     # Start the first download if it's not already in progress
-    if not download_manager.is_downloading:
+    if not download_manager.is_downloading:  # Check the download status using download_manager
         start_next_in_queue()
 
 # URL input
