@@ -3,6 +3,7 @@ from tkinter import filedialog, messagebox
 from format_fetcher import fetch_formats
 import download_manager  # Import download_manager module
 from queue_manager import add_to_queue, remove_from_queue, move_up_in_queue, move_down_in_queue, update_queue_listbox, process_next_in_queue
+import subprocess  # To run the side utility as a separate process
 
 # GUI Setup
 root = tk.Tk()
@@ -62,6 +63,14 @@ def start_download_process():
     if not download_manager.is_downloading:  # Check the download status using download_manager
         start_next_in_queue()
 
+# Function to open the downloaded video fixer utility
+def open_video_fixer():
+    # Open the downloadedVideoFixer.py script in a separate process
+    try:
+        subprocess.Popen(['python', 'downloadedVideoFixer.py'])  # This runs the script as a separate process
+    except FileNotFoundError:
+        messagebox.showerror("Error", "The video fixer utility could not be found.")
+
 # URL input
 tk.Label(root, text="Twitch Video URL:").grid(row=0, column=0, padx=10, pady=10, sticky="e")
 url_entry = tk.Entry(root, width=50)
@@ -86,14 +95,18 @@ resolutions_frame.grid(row=2, column=1, padx=10, pady=10, sticky="w")
 download_button = tk.Button(root, text="Download", command=start_download_process)
 download_button.grid(row=3, column=1, padx=10, pady=10)
 
+# Button to open downloaded video fixer utility
+video_fixer_button = tk.Button(root, text="Open Video Fixer", command=open_video_fixer)
+video_fixer_button.grid(row=4, column=1, padx=10, pady=10)
+
 # Queue listbox
-tk.Label(root, text="Download Queue:").grid(row=4, column=0, padx=10, pady=10, sticky="e")
+tk.Label(root, text="Download Queue:").grid(row=5, column=0, padx=10, pady=10, sticky="e")
 queue_listbox = tk.Listbox(root, width=50, height=10)
-queue_listbox.grid(row=4, column=1, padx=10, pady=10)
+queue_listbox.grid(row=5, column=1, padx=10, pady=10)
 
 # Queue control buttons
 control_frame = tk.Frame(root)
-control_frame.grid(row=5, column=1, padx=10, pady=10)
+control_frame.grid(row=6, column=1, padx=10, pady=10)
 remove_button = tk.Button(control_frame, text="Remove from Queue", command=lambda: remove_from_queue(queue_listbox))
 remove_button.grid(row=0, column=0, padx=5, pady=5)
 move_up_button = tk.Button(control_frame, text="Move Up", command=lambda: move_up_in_queue(queue_listbox))
